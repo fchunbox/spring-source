@@ -533,7 +533,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				// STEP 11： 实例化剩余的单例bean（非懒加载方式）
-                // 注意事项：Bean的IoC、DI和AOP都是发生在此步骤
+                // 注意事项：Bean的IoC、DI和AOP都是发生在此步骤， 实际上就是创建单例的Bean。
                 finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -606,7 +606,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
-		// 主要是通过该方法完成IoC容器的刷新
+		// 主要是通过该方法完成IoC容器的刷新, xml 的解析等
 		refreshBeanFactory();
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (logger.isDebugEnabled()) {

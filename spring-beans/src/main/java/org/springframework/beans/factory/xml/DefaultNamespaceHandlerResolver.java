@@ -138,7 +138,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 				// 实例化NamespaceHandler
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
 				// 调用NamespaceHandler类的init方法，初始化一些专门处理指定标签的BeanDefinitionParsers类
-				namespaceHandler.init();
+				namespaceHandler.init();// 注册字标签的BeanDefinitioinParser.
 				// 将namespaceUri对应的String类型的类名，替换为NamespaceHandler对象,下一次再获取的话，就不会重复创建实例
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
