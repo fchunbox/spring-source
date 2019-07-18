@@ -490,7 +490,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			// 获取BeanPostProcessor代理对象， 在这里创建代理bean对象。AOP
+			// 获取BeanPostProcessor代理对象， 在这里创建代理bean对象。
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) { // 如果创建成功，则直接返回代理对象。
 				return bean;
@@ -591,7 +591,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 调用反射和内省去进行属性设置
 			// 属性值需要进行类型转换
 			populateBean(beanName, mbd, instanceWrapper);
-			// bean初始化第三步：调用初始化方法，完成bean的初始化操作
+			// bean初始化第三步：调用初始化方法，完成bean的初始化操作 AOP发生在此步骤
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
