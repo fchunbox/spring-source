@@ -196,6 +196,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 	}
 
+	// 解析默认标签
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		// 解析<import>标签
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {

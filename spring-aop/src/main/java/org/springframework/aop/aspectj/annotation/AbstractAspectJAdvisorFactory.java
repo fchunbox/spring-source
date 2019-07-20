@@ -79,6 +79,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	}
 
 	private boolean hasAspectAnnotation(Class<?> clazz) {
+		// 查找clazz类是否有Aspect注解。
 		return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);
 	}
 

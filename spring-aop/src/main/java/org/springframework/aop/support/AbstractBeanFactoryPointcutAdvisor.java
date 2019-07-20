@@ -44,7 +44,7 @@ import org.springframework.util.Assert;
 public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
 	@Nullable
-	private String adviceBeanName;
+	private String adviceBeanName; // adviceBeanName,也就是我们自定义的advice类（增强器类）
 
 	@Nullable
 	private BeanFactory beanFactory;

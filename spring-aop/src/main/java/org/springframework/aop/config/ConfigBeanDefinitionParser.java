@@ -106,7 +106,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	}
 
 	/**
-	 * element : 就是<aop:config>标签元素对象
+	 * element : 就是<aop:config>标签元素对象， 返回BeanDefinition
 	 */
 	@Override
 	@Nullable
@@ -229,7 +229,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 		try {
 			this.parseState.push(new AspectEntry(aspectId, aspectName));
+			// 用于存放BeanDefinition
 			List<BeanDefinition> beanDefinitions = new ArrayList<>();
+
+			// 用于存放ref属性对应的BeanNames
 			List<BeanReference> beanReferences = new ArrayList<>();
 
 			// 处理<aop:aspect>标签的<aop:declare-parents>子标签
@@ -262,7 +265,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					}
 					// 解析<aop:before>等五个子标签
 					// 方法主要做了三件事：
-					//		1、根据织入方式（before、after这些）创建RootBeanDefinition，名为adviceDef即advice定义
+					//		1、根据织入方式（before、after这些）创建RootBeanDefinition，名为adviceDef即advice定义，也就是我们自定义的advice bean 的BeanDefinition
 					//		2、将上一步创建的RootBeanDefinition写入一个新的RootBeanDefinition，构造一个新的对象，名为advisorDefinition，即advisor定义
 					//		3、将advisorDefinition注册到DefaultListableBeanFactory中
 					AbstractBeanDefinition advisorDefinition = parseAdvice(
@@ -359,9 +362,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		try {
 			this.parseState.push(new AdviceEntry(parserContext.getDelegate().getLocalName(adviceElement)));
 
-			// create the method factory bean
+			// create the method factory bean，也就是用于创建advice类method对象的FactoryBean
 			// 创建方法工厂Bean的BeanDefinition对象：用于获取Advice增强类的Method对象
 			RootBeanDefinition methodDefinition = new RootBeanDefinition(MethodLocatingFactoryBean.class);
+
 			// 设置MethodLocatingFactoryBean的targetBeanName为advice类的引用名称
 			methodDefinition.getPropertyValues().add("targetBeanName", aspectName);
 			// 设置MethodLocatingFactoryBean的methodName为<aop:after>标签的method属性值（也就是advice方法名称）
@@ -369,9 +373,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			methodDefinition.setSynthetic(true);
 
 			// create instance factory definition
-			// 创建实例工厂BeanDefinition：用于创建增强类的实例 也就是AOP被代理类的对象
+			// 创建实例工厂BeanDefinition：用于创建增强类的实例，用于产生自定义的Advice类
 			RootBeanDefinition aspectFactoryDef =
 					new RootBeanDefinition(SimpleBeanFactoryAwareAspectInstanceFactory.class);
+
 			// 设置SimpleBeanFactoryAwareAspectInstanceFactory的aspectBeanName为advice类的引用名称
 			aspectFactoryDef.getPropertyValues().add("aspectBeanName", aspectName);
 			aspectFactoryDef.setSynthetic(true);
@@ -380,7 +385,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			// method.invoke(obj,args)
 
 			// register the pointcut
-			// 通知增强类的BeanDefinition对象（核心）
+			// 通知增强类的BeanDefinition对象（核心），组合了Pointcut、Advice以及Advice Method FactoryBean BeanDefinition的bd。
+			// 也就是说AspectJ中的Advice类封装了Pointcut、用户自定义的增强类以及增强方法。
 			AbstractBeanDefinition adviceDef = createAdviceDefinition(
 					adviceElement, parserContext, aspectName, order, methodDefinition, aspectFactoryDef,
 					beanDefinitions, beanReferences);
@@ -443,12 +449,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 		// 设置构造参数
 		ConstructorArgumentValues cav = adviceDefinition.getConstructorArgumentValues();
-		// 设置第一个构造参数：方法工厂对象的BeanDefinition
+		// 设置第一个构造参数：方法工厂对象的BeanDefinition，也就是曾强类的method引用
 		cav.addIndexedArgumentValue(METHOD_INDEX, methodDef); // method Def
 
 		// 解析<aop:before>、<aop:after>、<aop:after-returning>标签中的pointcut或者pointcut-ref属性
 		// 创建AspectJExpressionPonitcut BeanDefinition
 		Object pointcut = parsePointcutProperty(adviceElement, parserContext);
+
 		// 设置第二个构造参数：切入点BeanDefinition
 		if (pointcut instanceof BeanDefinition) {
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcut);
@@ -459,7 +466,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcutRef);
 			beanReferences.add(pointcutRef);
 		}
-		// 设置第三个构造参数：实例工厂BeanDefinition
+		// 设置第三个构造参数：实例工厂BeanDefinition，也就是我们自定义的advice增强类的引用。
 		cav.addIndexedArgumentValue(ASPECT_INSTANCE_FACTORY_INDEX, aspectFactoryDef);
 
 		return adviceDefinition;
@@ -473,6 +480,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		String elementName = parserContext.getDelegate().getLocalName(adviceElement);
 		// 处理<aop:before>标签
 		if (BEFORE.equals(elementName)) {
+			// 返回前置通知的Advice类
 			return AspectJMethodBeforeAdvice.class;
 		}
 		// 处理<aop:after>标签

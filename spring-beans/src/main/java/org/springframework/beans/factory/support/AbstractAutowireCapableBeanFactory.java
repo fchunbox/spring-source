@@ -490,7 +490,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			// 获取BeanPostProcessor代理对象， 在这里创建代理bean对象。
+			// 获取BeanPostProcessor代理对象， 在这里创建代理bean对象。调用InstantiationAwareBeanPostProcessor的方法，
+			// 有机会获取代理对象。
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) { // 如果创建成功，则直接返回代理对象。
 				return bean;
@@ -546,6 +547,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// bean初始化第一步：默认调用无参构造实例化Bean
 		// 构造参数依赖注入，就是发生在这一步
 		if (instanceWrapper == null) {
+			// 创建Bean的实例，调用无参构造器
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		// 实例化后的Bean对象
@@ -591,6 +593,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 调用反射和内省去进行属性设置
 			// 属性值需要进行类型转换
 			populateBean(beanName, mbd, instanceWrapper);
+
 			// bean初始化第三步：调用初始化方法，完成bean的初始化操作 AOP发生在此步骤
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
@@ -605,6 +608,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
+			// 从一 二级缓存中查找Bean，不从三级缓存中查找
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
@@ -633,6 +637,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
+			// 如果Bean自定义了destroy方法，将Bean注册为一个disposableBean。
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -1721,6 +1726,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			// 调用Aware方法
 			invokeAwareMethods(beanName, bean);
 		}
 
@@ -1748,7 +1754,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	private void invokeAwareMethods(final String beanName, final Object bean) {
 		if (bean instanceof Aware) {
-			if (bean instanceof BeanNameAware) {
+			if (bean instanceof BeanNameAware) {// 设置BeanName
 				((BeanNameAware) bean).setBeanName(beanName);
 			}
 			if (bean instanceof BeanClassLoaderAware) {
@@ -1757,7 +1763,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
 				}
 			}
-			if (bean instanceof BeanFactoryAware) {
+			if (bean instanceof BeanFactoryAware) { // 设置BeanFactory
 				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
 			}
 		}
