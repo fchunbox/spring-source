@@ -47,6 +47,8 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
 	public DefaultAdvisorAdapterRegistry() {
+		// 实例化DefaultAdvisorAdapterRegistry 时注册AdviceAdapter
+		// 注意：此处的编程思想
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
 		registerAdvisorAdapter(new AfterReturningAdviceAdapter());
 		registerAdvisorAdapter(new ThrowsAdviceAdapter());
@@ -62,7 +64,7 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 			throw new UnknownAdviceTypeException(adviceObject);
 		}
 		Advice advice = (Advice) adviceObject; // 如果是Advice对象
-		if (advice instanceof MethodInterceptor) {
+		if (advice instanceof MethodInterceptor) {// 也就是将aop  aopalliance 的advice适配为DefaultPointcutAdvisor.
 			// So well-known it doesn't even need an adapter.
 			return new DefaultPointcutAdvisor(advice);
 		}
@@ -76,6 +78,7 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	}
 
 	@Override
+	// 根据Advisor 获取其对应的MethodInterceptors
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
 		Advice advice = advisor.getAdvice();
@@ -84,6 +87,8 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		}
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
+
+				// 将advisor统一适配为MethodInterceptor 加入到集合中
 				interceptors.add(adapter.getInterceptor(advisor));
 			}
 		}

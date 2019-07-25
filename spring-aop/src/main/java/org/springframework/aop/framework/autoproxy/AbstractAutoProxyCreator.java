@@ -462,7 +462,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) this.beanFactory, beanName, beanClass);
 		}
 
-		// 创建代理工厂对象
+		// 创建代理工厂对象, 也是一个ProxyConfig对象
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.copyFrom(this);
 
@@ -481,9 +481,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// 获得所有关联的Advisor集合(该分支待补充)
 		// 是将Advisor和Advice统一适配为Advisor。相当于对Advice对象进行包装。
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+		// 将advisors保存到Proxy Config中
 		proxyFactory.addAdvisors(advisors);
+
 		// 此处的targetSource一般为SingletonTargetSource
 		proxyFactory.setTargetSource(targetSource);
+
 		// 空的实现
 		customizeProxyFactory(proxyFactory);
 

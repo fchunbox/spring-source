@@ -99,12 +99,15 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 		}
 	}
 
+	// 解析attributes标签
 	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
 		// 获取所有<tx:method>子标签
 		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
+
 		// RuleBasedTransactionAttribute 实现了 TransactionDefinition接口(事务定义信息)
 		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
 				new ManagedMap<>(methods.size());
+
 		transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
 
 		// 解析<tx:method>子标签

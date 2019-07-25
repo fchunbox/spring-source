@@ -69,6 +69,7 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		// 调用子类的getBeanClass方法，获取BeanDefinition对应的BeanClass
 		// TxAdviceBeanDefinitionParser子类对应的BeanClass是TransactionInterceptor.class
 		Class<?> beanClass = getBeanClass(element);
+
 		// 如果BeanClass不为空，则将BeanClass设置到BeanDefinition对象中
 		if (beanClass != null) {
 			builder.getRawBeanDefinition().setBeanClass(beanClass);

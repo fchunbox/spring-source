@@ -44,6 +44,7 @@ import org.springframework.aop.SpringProxy;
  * @see AdvisedSupport#setInterfaces
  */
 @SuppressWarnings("serial")
+// DefaultAopProxyFactory 用于创建AopProxy
 public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override

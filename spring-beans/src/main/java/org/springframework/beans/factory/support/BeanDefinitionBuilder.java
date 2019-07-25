@@ -40,6 +40,7 @@ public class BeanDefinitionBuilder {
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link GenericBeanDefinition}.
 	 */
 	public static BeanDefinitionBuilder genericBeanDefinition() {
+		// 构建者模式
 		return new BeanDefinitionBuilder(new GenericBeanDefinition());
 	}
 

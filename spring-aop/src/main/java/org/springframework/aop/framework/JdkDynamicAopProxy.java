@@ -121,6 +121,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		// 获取完整的代理接口
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
+
 		// 调用JDK动态代理方法
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
 	}
@@ -196,6 +197,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
 			// Get the interception chain for this method.
+			// 获取MethodInterceptor链
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
