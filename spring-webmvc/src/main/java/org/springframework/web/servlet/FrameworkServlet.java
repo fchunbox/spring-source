@@ -522,6 +522,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #setContextConfigLocation
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
+		// 从ServletContext域中获取rootContext
 		WebApplicationContext rootContext =
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
@@ -630,7 +631,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 					"': custom WebApplicationContext class [" + contextClass.getName() +
 					"] is not of type ConfigurableWebApplicationContext");
 		}
-		// 创建web应用上下文
+		// 创建web应用上下文, 默认是是
 		ConfigurableWebApplicationContext wac =
 				(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
 
@@ -815,8 +816,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * triggering a refresh of this servlet's context-dependent state.
 	 * @param event the incoming ApplicationContext event
 	 */
+	// 响应AbstractApplicationContext#refresh 发送的ContextRefreshedEvent事件
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		this.refreshEventReceived = true;
+
+		// 刷新容器策略，这个是调用WebApplicationContext的refresh方法中调用的。
 		onRefresh(event.getApplicationContext());
 	}
 
@@ -1129,6 +1133,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		@Override
 		public void onApplicationEvent(ContextRefreshedEvent event) {
+
+			// 也就是在此响应了ContextRefreshedEvent事件
 			FrameworkServlet.this.onApplicationEvent(event);
 		}
 	}

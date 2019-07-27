@@ -26,10 +26,10 @@ import java.beans.PropertyDescriptor;
  * {@link org.springframework.validation.DataBinder}.
  *
  * <p>Provides operations to analyze and manipulate standard JavaBeans:
- * the ability to get and set property values (individually or in bulk),
- * get property descriptors, and query the readability/writability of properties.
- *
- * <p>This interface supports <b>nested properties</b> enabling the setting
+ *  * the ability to get and set property values (individually or in bulk),
+ *  * get property descriptors, and query the readability/writability of properties.
+ *  *
+ *  * <p>This interface supports <b>nested properties</b> enabling the setting
  * of properties on subproperties to an unlimited depth.
  *
  * <p>A BeanWrapper's default for the "extractOldValueForEditor" setting

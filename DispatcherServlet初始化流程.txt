@@ -1,0 +1,67 @@
+1. DispatcherServlet初始化流程
+	HttpServletBean#init(): 初始化
+		#完成属性注入
+		FrameworkServlet#initServletBean(): 初始化servlet
+			#initWebApplicationContext（）： 初始化WebApplicationContext
+				WebApplicationContextUtils#getWebApplicationContext(getServletContext()): 从ServletContext域中获取
+				# 如果最终在ServletContext中没有发现WebApplicationContext对象，调用creanteWebApplicationContext(): 创建XmlWebApplicationContext
+					#configureAndRefreshWebApplicationContext（）： 配置和刷新WebApplicationContext容器
+						AbstractApplicationContext#refresh(): 刷新容器
+							# 当容器刷新完毕后，发送ContextRefreshedEvent事件
+								FrameworkServlet$ContextRefreshListener#onApplicationEvent: 响应ContextRefreshedEvent事件
+									#设置refreshEventReceived =  true
+									DispatcherServlet#onRefresh(): 刷新初始化策略
+							
+				DispatcherServlet#onRefresh(): 刷新初始化策略
+					#initStrategies(): 初始化策略容器
+						#initMultipartResolver(context)：初始化多部件解析器
+						#initLocaleResolver(context): 初始化国际化解析器
+						#initThemeResolver(context): // 初始化主题解析器
+						#initHandlerMappings(context): // 初始化处理器映射器, 实质是调用InitializingBan接口的afterPropertiesSet（）方法初始化
+						#initHandlerAdapters(context)： // 初始化处理器适配器， 同上
+						#initHandlerExceptionResolvers(context)： // 初始化异常解析器
+						#initRequestToViewNameTranslator(context); 
+						#initViewResolvers(context)： // 初始会视图解析器
+						#initFlashMapManager(context);
+						
+						
+						
+2. RequestMappingHandlerMapping 初始化流程
+	RequestMappingHandlerMapping#afterPropertiesSet: 初始化HandlerMapping
+		# 创建RequestMappingInfo对象
+		AbstractHandlerMethodMapping#afterPropertiesSet: 初始化处理器方法
+			#initHandlerMethods(): 初始化处理器方法
+				# 获取当前IOC容器所有的对象。
+				# 遍历BeanNames， 从IOC容器中获取bean name对应的beanType
+					RequestMappingHandlerMapping#isHander（beanType）: 判断是否是Handler， 实质就是判断beanType是否被@Controller或@RequestMapping注解修饰
+						# 如果是： detectHandlerMethods： 从Controller或者RequestMapping注解的Bean中，找到所有HandlerMethod
+							# 获取handler的handlerType Class 对象
+							MethodIntrospector#selectMethods： 返回Method对应和RequestMappingInfo对象的映射
+								MetadataLookup#inspect:
+									RequestMappingHandlerMapping#getMappingForMethod（method, handlerType）: 创建RequestMappingInfo对象
+								
+								# 将Method方法和RequestMappingInfo对象建立映射，存储Map集合中
+								
+							# 将Method方法和RequestMappingInfo 的Map集合
+								registerHandlerMethod： 注册handler method 和RequestMappingInfo的映射关系
+									AbstractHandlerMethodMapping$MappingRegistry#register: 
+										#createHandlerMethod(): 创建HandlerMethod方法
+										#this.mappingLookup.put(mapping, handlerMethod)： 存储RequestMappingInfo对象和HandlerMethod对象的映射关系
+										# getDirectUrls: 获取maping对应的多个url 在使用时，首先根据url找到REquestMappingInfo，再通过RequestMappingInfo对象找到我们的HandlerMethod
+										# 建立url和RequestMappingInfo之间的映射关系， 理解： 由于Restful API 的问题，一个RequestMappingInfo可能对应多个url请求。
+	
+	总结：
+		1. RequestMappingHandlerMapping 初始化最终建立起了连个映射集合
+			// 存储RequestMappingInfo对象和HandlerMethod对象的映射关系
+			private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
+
+			// 存储RequestMappingInfo对象和URL的映射关系
+			private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
+			
+		2. 在使用时，首先根据url找到REquestMappingInfo，再通过RequestMappingInfo对象找到我们的HandlerMethod
+			url -> RequestMappingInfo
+			RequestMappingInfo -> HandlerMethod
+			
+			
+3. RequstMappingHandlerAdaptor 初始化流程
+						

@@ -148,12 +148,6 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 		setIntrospectionClass(object.getClass());
 	}
 
-	@Override
-	public void setWrappedInstance(Object object, @Nullable String nestedPath, @Nullable Object rootObject) {
-		super.setWrappedInstance(object, nestedPath, rootObject);
-		setIntrospectionClass(getWrappedClass());
-	}
-
 	/**
 	 * Set the class to introspect.
 	 * Needs to be called when the target object changes.
@@ -163,6 +157,12 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 		if (this.cachedIntrospectionResults != null && this.cachedIntrospectionResults.getBeanClass() != clazz) {
 			this.cachedIntrospectionResults = null;
 		}
+	}
+
+	@Override
+	public void setWrappedInstance(Object object, @Nullable String nestedPath, @Nullable Object rootObject) {
+		super.setWrappedInstance(object, nestedPath, rootObject);
+		setIntrospectionClass(getWrappedClass());
 	}
 
 	/**

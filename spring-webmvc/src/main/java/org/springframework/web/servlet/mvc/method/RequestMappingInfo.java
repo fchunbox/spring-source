@@ -36,15 +36,17 @@ import org.springframework.web.servlet.mvc.condition.RequestConditionHolder;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.util.UrlPathHelper;
 
+
+
 /**
  * A {@link RequestCondition} that consists of the following other conditions:
  * <ol>
- * <li>{@link PatternsRequestCondition}
- * <li>{@link RequestMethodsRequestCondition}
- * <li>{@link ParamsRequestCondition}
- * <li>{@link HeadersRequestCondition}
- * <li>{@link ConsumesRequestCondition}
- * <li>{@link ProducesRequestCondition}
+ * <li>{@link PatternsRequestCondition} 对应的url
+ * <li>{@link RequestMethodsRequestCondition} 对应HTTP Method
+ * <li>{@link ParamsRequestCondition}  # 对应参数匹配
+ * <li>{@link HeadersRequestCondition} # 对应Header参数匹配
+ * <li>{@link ConsumesRequestCondition} # 对应consumes参数匹配
+ * <li>{@link ProducesRequestCondition} # 对应produces参数匹配
  * <li>{@code RequestCondition} (optional, custom request condition)
  * </ol>
  *
@@ -52,6 +54,7 @@ import org.springframework.web.util.UrlPathHelper;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 封装@RequestMapping注解的参数的 Condition
 public final class RequestMappingInfo implements RequestCondition<RequestMappingInfo> {
 
 	@Nullable
@@ -72,9 +75,9 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	private final RequestConditionHolder customConditionHolder;
 
 	public RequestMappingInfo(@Nullable String name, @Nullable PatternsRequestCondition patterns,
-			@Nullable RequestMethodsRequestCondition methods, @Nullable ParamsRequestCondition params,
-			@Nullable HeadersRequestCondition headers, @Nullable ConsumesRequestCondition consumes,
-			@Nullable ProducesRequestCondition produces, @Nullable RequestCondition<?> custom) {
+							  @Nullable RequestMethodsRequestCondition methods, @Nullable ParamsRequestCondition params,
+							  @Nullable HeadersRequestCondition headers, @Nullable ConsumesRequestCondition consumes,
+							  @Nullable ProducesRequestCondition produces, @Nullable RequestCondition<?> custom) {
 
 		this.name = (StringUtils.hasText(name) ? name : null);
 		this.patternsCondition = (patterns != null ? patterns : new PatternsRequestCondition());
@@ -90,9 +93,9 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * Creates a new instance with the given request conditions.
 	 */
 	public RequestMappingInfo(@Nullable PatternsRequestCondition patterns,
-			@Nullable RequestMethodsRequestCondition methods, @Nullable ParamsRequestCondition params,
-			@Nullable HeadersRequestCondition headers, @Nullable ConsumesRequestCondition consumes,
-			@Nullable ProducesRequestCondition produces, @Nullable RequestCondition<?> custom) {
+							  @Nullable RequestMethodsRequestCondition methods, @Nullable ParamsRequestCondition params,
+							  @Nullable HeadersRequestCondition headers, @Nullable ConsumesRequestCondition consumes,
+							  @Nullable ProducesRequestCondition produces, @Nullable RequestCondition<?> custom) {
 
 		this(null, patterns, methods, params, headers, consumes, produces, custom);
 	}

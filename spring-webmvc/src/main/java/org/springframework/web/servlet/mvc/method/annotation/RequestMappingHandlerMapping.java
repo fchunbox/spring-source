@@ -116,6 +116,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		this.embeddedValueResolver = resolver;
 	}
 
+	// RequestMappingHandlerMapping是通过creatBean方法直接创建的
 	// RequestMappingHandlerMapping实现了InitializingBean接口，所有在Bean初始化的时候，会调用afterPropertiesSet方法
 	@Override
 	public void afterPropertiesSet() {

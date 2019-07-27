@@ -898,6 +898,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#createBean
 	 */
 	protected Object createDefaultStrategy(ApplicationContext context, Class<?> clazz) {
+		// 直接通过ApplicationContext IOC容器来创建Bean， 将clazz使用BeanFactory来创建
 		return context.getAutowireCapableBeanFactory().createBean(clazz);
 	}
 
