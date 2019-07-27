@@ -152,7 +152,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		}
 
 		// Set bean properties from init parameters.
-		// 创建一个PropertyValues 对象，用于保存Servlet的初始化参数
+		// 创建一个PropertyValues 对象，用于保存Servlet的初始化参数 init-params
 		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {

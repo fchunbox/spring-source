@@ -10,7 +10,7 @@
 							# 当容器刷新完毕后，发送ContextRefreshedEvent事件
 								FrameworkServlet$ContextRefreshListener#onApplicationEvent: 响应ContextRefreshedEvent事件
 									#设置refreshEventReceived =  true
-									DispatcherServlet#onRefresh(): 刷新初始化策略
+									DispatcherServlet#onRefresh(): 刷新初始化策略,
 							
 				DispatcherServlet#onRefresh(): 刷新初始化策略
 					#initStrategies(): 初始化策略容器
@@ -36,16 +36,16 @@
 					RequestMappingHandlerMapping#isHander（beanType）: 判断是否是Handler， 实质就是判断beanType是否被@Controller或@RequestMapping注解修饰
 						# 如果是： detectHandlerMethods： 从Controller或者RequestMapping注解的Bean中，找到所有HandlerMethod
 							# 获取handler的handlerType Class 对象
-							MethodIntrospector#selectMethods： 返回Method对应和RequestMappingInfo对象的映射
+							MethodIntrospector#selectMethods： 返回Method和RequestMappingInfo对象的映射
 								MetadataLookup#inspect:
 									RequestMappingHandlerMapping#getMappingForMethod（method, handlerType）: 创建RequestMappingInfo对象
 								
 								# 将Method方法和RequestMappingInfo对象建立映射，存储Map集合中
 								
-							# 将Method方法和RequestMappingInfo 的Map集合
+							# 遍历Method方法和RequestMappingInfo 的Map集合
 								registerHandlerMethod： 注册handler method 和RequestMappingInfo的映射关系
 									AbstractHandlerMethodMapping$MappingRegistry#register: 
-										#createHandlerMethod(): 创建HandlerMethod方法
+										#createHandlerMethod(): 创建HandlerMethod对象
 										#this.mappingLookup.put(mapping, handlerMethod)： 存储RequestMappingInfo对象和HandlerMethod对象的映射关系
 										# getDirectUrls: 获取maping对应的多个url 在使用时，首先根据url找到REquestMappingInfo，再通过RequestMappingInfo对象找到我们的HandlerMethod
 										# 建立url和RequestMappingInfo之间的映射关系， 理解： 由于Restful API 的问题，一个RequestMappingInfo可能对应多个url请求。
@@ -64,4 +64,14 @@
 			
 			
 3. RequstMappingHandlerAdaptor 初始化流程
+    DispatcherServlet在初始化HandlerAdaptor时，是通过IOC容器来创建Bean实例，调用RequestMappingHandlerAdaptor的afterPropertiesSet()方法来进行初始化
+    RequestMappingHandlerAdaptor#afterPropertiesSet(): 初始化
+        #initControllerAdviceCache: 初始化@ControllerAdvice通知缓存
+        # 初始化参数解析器
+        # 初始化Binder参数解析器
+        # 初始化处理器返回值解析器
+
+
+4. DispatcherServlet请求处理流程
+
 						

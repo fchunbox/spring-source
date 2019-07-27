@@ -540,6 +540,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 						// the root application context (if any; may be null) as the parent
 						cwac.setParent(rootContext);
 					}
+					// 刷新配置WebApplicationContext
 					configureAndRefreshWebApplicationContext(cwac);
 				}
 			}
@@ -549,10 +550,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// has been registered in the servlet context. If one exists, it is assumed
 			// that the parent context (if any) has already been set and that the
 			// user has performed any initialization such as setting the context id
+			// 再次从ServletCon域中获取WebApplicationContext
 			wac = findWebApplicationContext();
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
+			// 创建WebApplicationContext
 			wac = createWebApplicationContext(rootContext);
 		}
 
@@ -876,6 +879,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected final void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// 处理请求
 		processRequest(request, response);
 	}
 
@@ -972,18 +976,28 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
 
+		// 从ThreadLocal中获取LocaleContext
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+
+		// 从request中获取Locale封装到LocaleContext中， SimpleLocaleContext
 		LocaleContext localeContext = buildLocaleContext(request);
 
+		// 从ThreadLocal中获取RequestAttribute，ServletRequestAttributes封装了当前的request 和response对象
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+
+		// 创建ServletRequestAttributes， 封装了request 和 response
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
+		// 从request域中获取WebAsyncManager
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		// 将ServletRequestAttributes对象放入到RequestContextHolder中
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+
+			// 开始处理请求
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {
@@ -996,6 +1010,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
+			// 重置ContextHolder
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
@@ -1015,6 +1030,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 
+			// 不管处理是否成功，发送ServletRequestHandledEvent事件
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}
