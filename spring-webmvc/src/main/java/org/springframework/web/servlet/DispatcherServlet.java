@@ -901,9 +901,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#createBean
 	 */
 	protected Object createDefaultStrategy(ApplicationContext context, Class<?> clazz) {
-
 		// 通过WebApplicationContext，调用creatBean将默认的HandlerMapping纳入到IOC容器中
 		// 并创建对应的bean, 调用Initializing接口的afterPropertiesSet方法。
+		// 直接通过ApplicationContext IOC容器来创建Bean， 将clazz使用BeanFactory来创建
 		return context.getAutowireCapableBeanFactory().createBean(clazz);
 	}
 
@@ -985,6 +985,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		HandlerExecutionChain mappedHandler = null;
 		boolean multipartRequestParsed = false;
 
+		// 在service方法中创建的
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
@@ -998,7 +999,8 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Determine handler for the current request.
 				// 通过处理器映射器HandlerMapping，获取handler处理器执行链，该执行链封装了处理器和对应该处理器的拦截器（可能有多个）
-				// 需要注意的是@Controller注解的类，它不是我们这里要查找的处理器，我们要查找的处理器是@RequestMapping对应的方法，这个方法会封装到HandlerMethod类中
+				// 需要注意的是@Controller注解的类，它不是我们这里要查找的处理器，我们要查找的处理器是@RequestMapping对应的方法，
+				// 这个方法会封装到HandlerMethod类中
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
 					noHandlerFound(processedRequest, response);

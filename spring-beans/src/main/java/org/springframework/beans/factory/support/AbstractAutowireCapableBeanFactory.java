@@ -1252,6 +1252,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			else {
 				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
 			}
+
+			// 将bean的实例，使用BeanWrapper 进行包装，这也就是装饰者模式体现
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
 			initBeanWrapper(bw);
 			return bw;

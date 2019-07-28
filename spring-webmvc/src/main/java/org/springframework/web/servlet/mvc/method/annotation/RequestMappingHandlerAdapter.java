@@ -581,6 +581,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 		// 查找到所有被ControllerAdvice注解的类
 		List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
+
+		// 排序
 		AnnotationAwareOrderComparator.sort(adviceBeans);
 
 		List<Object> requestResponseBodyAdviceBeans = new ArrayList<>();
@@ -631,7 +633,11 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 * Return the list of argument resolvers to use including built-in resolvers
 	 * and custom resolvers provided via {@link #setCustomArgumentResolvers}.
 	 */
+	// 获取默认的参数解析器
 	private List<HandlerMethodArgumentResolver> getDefaultArgumentResolvers() {
+
+		// 注意，理解这种思想，现将所有的解析器放入到集合中，使用的使用直接使用，不用
+		// 使用一大堆的if-else 来判断
 		List<HandlerMethodArgumentResolver> resolvers = new ArrayList<>();
 
 		// Annotation-based argument resolution

@@ -37,8 +37,10 @@ import org.springframework.util.StringUtils;
  * @since 13 May 2001
  */
 @SuppressWarnings("serial")
+// PropertyValues接口的默认实现
 public class MutablePropertyValues implements PropertyValues, Serializable {
 
+	// 保存PropertyValue的列表
 	private final List<PropertyValue> propertyValueList;
 
 	@Nullable
