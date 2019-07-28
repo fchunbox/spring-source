@@ -243,9 +243,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		if (handlerType != null) {
 			// 如果该类是通过cglib代理的代理类，则获取其父类类型，否则的话，直接返回该类
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
+
 			// 存储Method方法和RequestMapping注解信息的映射关系（重点）
 			// 该映射关系会解析成我们需要的其他两个映射关系
 			// key是Controller类中的Method对象，value是RequestMappingInfo对象
+			// 采用jdk的内省技术
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {// 此处是设置回调函数
 						try {
@@ -569,6 +571,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			this.readWriteLock.readLock().unlock();
 		}
 
+		// 这里的T对于RequestMappingHandlerMapping而言就是RequestMappingInfo
 		public void register(T mapping, Object handler, Method method) {
 			this.readWriteLock.writeLock().lock();
 			try {

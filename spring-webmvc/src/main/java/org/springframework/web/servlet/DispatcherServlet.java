@@ -500,7 +500,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
-		// 初始化多部件解析器
+		// 初始化多部件解析器, 文件上传
 		initMultipartResolver(context);
 		// 初始化国际化解析器
 		initLocaleResolver(context);
@@ -552,7 +552,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				logger.debug("Using LocaleResolver [" + this.localeResolver + "]");
 			}
 		}
-		catch (NoSuchBeanDefinitionException ex) {
+		catch (NoSuchBeanDefinitionException ex) { // 如果在IOC容器中没有，那么就使用默认的LocalResolver
 			// We need to use the default.
 			this.localeResolver = getDefaultStrategy(context, LocaleResolver.class);
 			if (logger.isDebugEnabled()) {
@@ -605,6 +605,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				// 尝试从IOC容器查找HandlerMapping
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
 				this.handlerMappings = Collections.singletonList(hm);
 			}
@@ -617,6 +618,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// a default HandlerMapping if no other mappings are found.
 		if (this.handlerMappings == null) {
 			// 如果没有从spring容器中获取到HandlerMapping，则从默认DispatcherServlet.properties文件中加载默认策略
+			// 默认的HandlerMapping为: RequestMappingHandlerMapping和BeanNameUrlHandlerMapping
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isDebugEnabled()) {
 				logger.debug("No HandlerMappings found in servlet '" + getServletName() + "': using default");
@@ -835,6 +837,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see #getDefaultStrategies
 	 */
 	protected <T> T getDefaultStrategy(ApplicationContext context, Class<T> strategyInterface) {
+		// 默认的AcceptHeaderLocaleResolver
 		List<T> strategies = getDefaultStrategies(context, strategyInterface);
 		if (strategies.size() != 1) {
 			throw new BeanInitializationException(
@@ -898,6 +901,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#createBean
 	 */
 	protected Object createDefaultStrategy(ApplicationContext context, Class<?> clazz) {
+
+		// 通过WebApplicationContext，调用creatBean将默认的HandlerMapping纳入到IOC容器中
+		// 并创建对应的bean, 调用Initializing接口的afterPropertiesSet方法。
 		return context.getAutowireCapableBeanFactory().createBean(clazz);
 	}
 
@@ -929,7 +935,11 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		// Make framework objects available to handlers and view objects.
+
+		// 将WebApplicationContext放入到请求域中
 		request.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, getWebApplicationContext());
+
+		// 将localResolver放入到request请求域中
 		request.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, this.localeResolver);
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
@@ -970,6 +980,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpServletRequest processedRequest = request;
+
+		// Handler 执行链
 		HandlerExecutionChain mappedHandler = null;
 		boolean multipartRequestParsed = false;
 

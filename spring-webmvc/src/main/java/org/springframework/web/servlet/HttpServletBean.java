@@ -134,6 +134,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>Subclasses may override this in order to configure the environment or
 	 * specialize the environment type returned.
 	 */
+	// 创建标准的ServletEnvironment
 	protected ConfigurableEnvironment createEnvironment() {
 		return new StandardServletEnvironment();
 	}

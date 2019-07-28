@@ -194,7 +194,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 		// 获取指定method对应的RequestMapping注解信息
 		RequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
-			// 获取指定bean对应的RequestMapping注解信息
+			// 获取指定bean对应的RequestMapping注解信息,也就是method所在类的上的RequestMapping注解的信息
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
 				// 将bean上面的RequestMapping信息和method上面的RequestMapping信息进行合并
@@ -262,7 +262,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
 
-		// 通过构建器模式，创建RequestMappingInfo对象
+		// 通过构建器模式，创建RequestMappingInfo对象， 也就是将RequestMapping的信息封装为RequestMappingInfo
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())
