@@ -114,6 +114,8 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 		Assert.state(mavContainer != null, "ModelAttributeMethodProcessor requires ModelAndViewContainer");
 		Assert.state(binderFactory != null, "ModelAttributeMethodProcessor requires WebDataBinderFactory");
 
+		// 获取Method 参数的名称，如果有@ModelAttribute注解修饰，获取其value值作为参数名称，否则使用类名首字母小写的方式
+		// 作为参数的名称
 		String name = ModelFactory.getNameForParameter(parameter);
 		ModelAttribute ann = parameter.getParameterAnnotation(ModelAttribute.class);
 		if (ann != null) {
@@ -129,6 +131,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 		else {
 			// Create attribute instance
 			try {
+				// 创建Method 参数对象
 				attribute = createAttribute(name, parameter, binderFactory, webRequest);
 			}
 			catch (BindException ex) {
@@ -147,11 +150,17 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 		if (bindingResult == null) {
 			// Bean property binding and validation;
 			// skipped in case of binding failure on construction.
+			// bean 属性绑定和验证
+			// 创建DataBinder对象
 			WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
 			if (binder.getTarget() != null) {
 				if (!mavContainer.isBindingDisabled(name)) {
+
+					// 这里进行参数绑定
 					bindRequestParameters(binder, webRequest);
 				}
+
+				// 这里开始调用DataBinder validators 链，验证参数是否合适。
 				validateIfApplicable(binder, parameter);
 				if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
 					throw new BindException(binder.getBindingResult());
@@ -195,9 +204,13 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 	protected Object createAttribute(String attributeName, MethodParameter parameter,
 			WebDataBinderFactory binderFactory, NativeWebRequest webRequest) throws Exception {
 
+		// 获取参数类型
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
+
+		// 获取参数类型的Class
 		Class<?> clazz = nestedParameter.getNestedParameterType();
 
+		// 获取构造器
 		Constructor<?> ctor = BeanUtils.findPrimaryConstructor(clazz);
 		if (ctor == null) {
 			Constructor<?>[] ctors = clazz.getConstructors();
@@ -214,6 +227,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 			}
 		}
 
+		// 通过构造器创建参数对象
 		Object attribute = constructAttribute(ctor, attributeName, binderFactory, webRequest);
 		if (parameter != nestedParameter) {
 			attribute = Optional.of(attribute);
@@ -238,7 +252,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 	protected Object constructAttribute(Constructor<?> ctor, String attributeName,
 			WebDataBinderFactory binderFactory, NativeWebRequest webRequest) throws Exception {
 
-		if (ctor.getParameterCount() == 0) {
+		if (ctor.getParameterCount() == 0) { // 如果无参数构造器，直接创建对象，返回
 			// A single default constructor -> clearly a standard JavaBeans arrangement.
 			return BeanUtils.instantiateClass(ctor);
 		}

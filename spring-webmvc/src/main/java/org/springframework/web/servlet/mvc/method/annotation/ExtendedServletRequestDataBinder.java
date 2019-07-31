@@ -60,6 +60,7 @@ public class ExtendedServletRequestDataBinder extends ServletRequestDataBinder {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
+	// 路径参数中，就是在此解析的，放入到MutablePropertyValues中。
 	protected void addBindValues(MutablePropertyValues mpvs, ServletRequest request) {
 		String attr = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 		Map<String, String> uriVars = (Map<String, String>) request.getAttribute(attr);
