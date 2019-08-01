@@ -107,6 +107,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
+		// 判断参数是否被@RequestBody注解修饰
 		return parameter.hasParameterAnnotation(RequestBody.class);
 	}
 
@@ -127,12 +128,18 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
 		parameter = parameter.nestedIfOptional();
+
+		// 从请求体中解析参数，并转换
 		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+
+		// 获取参数的名称
 		String name = Conventions.getVariableNameForParameter(parameter);
 
 		if (binderFactory != null) {
+			// 创建WebDataBinder， 调用@initBinder修饰的方法
 			WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
 			if (arg != null) {
+				// 通过用户设置的validator验证参数是否合法，处理之前的验证
 				validateIfApplicable(binder, parameter);
 				if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
 					throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
@@ -150,10 +157,14 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 	protected <T> Object readWithMessageConverters(NativeWebRequest webRequest, MethodParameter parameter,
 			Type paramType) throws IOException, HttpMediaTypeNotSupportedException, HttpMessageNotReadableException {
 
+		// 获取request
 		HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 		Assert.state(servletRequest != null, "No HttpServletRequest");
+
+		// 封装一个ServletServetHttpRequest对象，解析我们request，
 		ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
 
+		// 完成请求体的转换，转换为对应的parameter的实例，也就是完成参数的绑定
 		Object arg = readWithMessageConverters(inputMessage, parameter, paramType);
 		if (arg == null && checkRequired(parameter)) {
 			throw new HttpMessageNotReadableException("Required request body is missing: " +

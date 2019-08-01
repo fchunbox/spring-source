@@ -92,7 +92,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 	 * method parameter that is not a simple type.
 	 */
 	@Override
-	public boolean supportsParameter(MethodParameter parameter) {
+	public boolean supportsParameter(MethodParameter parameter) { // 理解： 如果参数不带任何注解，那么就是ModelAttribute参数
 		return (parameter.hasParameterAnnotation(ModelAttribute.class) ||
 				(this.annotationNotRequired && !BeanUtils.isSimpleProperty(parameter.getParameterType())));
 	}
