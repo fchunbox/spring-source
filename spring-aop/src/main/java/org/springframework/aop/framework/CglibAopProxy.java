@@ -282,6 +282,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 	}
 
+
 	private Callback[] getCallbacks(Class<?> rootClass) throws Exception {
 		// Parameters used for optimization choices...
 		boolean exposeProxy = this.advised.isExposeProxy();
@@ -349,7 +350,6 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 		return callbacks;
 	}
-
 
 	@Override
 	public boolean equals(Object other) {

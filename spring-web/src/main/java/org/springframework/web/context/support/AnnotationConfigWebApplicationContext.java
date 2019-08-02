@@ -92,6 +92,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 
 	private final Set<Class<?>> annotatedClasses = new LinkedHashSet<>();
 
+	// 设置要扫描的包
 	private final Set<String> basePackages = new LinkedHashSet<>();
 
 
@@ -191,16 +192,23 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 	 * @see ClassPathBeanDefinitionScanner
 	 */
 	@Override
+	// 扫描@Component注解修饰的注册为BeanDefinition
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
+
+		// 创建AnnotatedBeanDefinitionReader对象，作用就是读取类上的注解
 		AnnotatedBeanDefinitionReader reader = getAnnotatedBeanDefinitionReader(beanFactory);
+
+		// 类路径下的bean definition scanner，作用就是扫描类路径下的所有类。
 		ClassPathBeanDefinitionScanner scanner = getClassPathBeanDefinitionScanner(beanFactory);
 
 		BeanNameGenerator beanNameGenerator = getBeanNameGenerator();
 		if (beanNameGenerator != null) {
 			reader.setBeanNameGenerator(beanNameGenerator);
 			scanner.setBeanNameGenerator(beanNameGenerator);
+			// 想IOC容器中，注册beanNameGenerator
 			beanFactory.registerSingleton(AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR, beanNameGenerator);
 		}
+
 
 		ScopeMetadataResolver scopeMetadataResolver = getScopeMetadataResolver();
 		if (scopeMetadataResolver != null) {
@@ -224,6 +232,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 			scanner.scan(StringUtils.toStringArray(this.basePackages));
 		}
 
+		// 得到配置文件的位置， 这个配置可以是类，也可以是package
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			for (String configLocation : configLocations) {
@@ -239,6 +248,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 						logger.debug("Could not load class for config location [" + configLocation +
 								"] - trying package scan. " + ex);
 					}
+					// 扫描包
 					int count = scanner.scan(configLocation);
 					if (logger.isInfoEnabled()) {
 						if (count == 0) {
@@ -265,6 +275,7 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 	 * @see #getScopeMetadataResolver()
 	 */
 	protected AnnotatedBeanDefinitionReader getAnnotatedBeanDefinitionReader(DefaultListableBeanFactory beanFactory) {
+		// 创建一个AnnotatedBeanDefinitionReader, 去读取注解
 		return new AnnotatedBeanDefinitionReader(beanFactory, getEnvironment());
 	}
 

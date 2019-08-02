@@ -129,7 +129,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 
 		parameter = parameter.nestedIfOptional();
 
-		// 从请求体中解析参数，并转换
+		// 从请求体中解析参数，并转换为参数model的实例对象
 		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
 
 		// 获取参数的名称
@@ -161,10 +161,10 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 		HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 		Assert.state(servletRequest != null, "No HttpServletRequest");
 
-		// 封装一个ServletServetHttpRequest对象，解析我们request，
+		// 封装一个ServletServetHttpRequest对象，解析我们request
 		ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
 
-		// 完成请求体的转换，转换为对应的parameter的实例，也就是完成参数的绑定
+		// 完成请求体的转换，转换为对应的parameter的实例，也就是完成参数值的注入
 		Object arg = readWithMessageConverters(inputMessage, parameter, paramType);
 		if (arg == null && checkRequired(parameter)) {
 			throw new HttpMessageNotReadableException("Required request body is missing: " +

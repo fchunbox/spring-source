@@ -290,6 +290,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Subclasses may override this method in order to supply
 	 * a custom {@link ConfigurableEnvironment} implementation.
 	 */
+	// 创建ConfigurableEnvironment
 	protected ConfigurableEnvironment createEnvironment() {
 		return new StandardEnvironment();
 	}
@@ -423,6 +424,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
 	protected ResourcePatternResolver getResourcePatternResolver() {
+		// 创建PathMatchingResourcePatternResolver
 		return new PathMatchingResourcePatternResolver(this);
 	}
 

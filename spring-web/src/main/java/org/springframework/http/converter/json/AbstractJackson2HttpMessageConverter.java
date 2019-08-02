@@ -154,6 +154,7 @@ public abstract class AbstractJackson2HttpMessageConverter extends AbstractGener
 		if (!canRead(mediaType)) {
 			return false;
 		}
+		// 获取JavaType对象，为了就是将请求体中的json转化为对应的实例
 		JavaType javaType = getJavaType(type, contextClass);
 		AtomicReference<Throwable> causeRef = new AtomicReference<>();
 		if (this.objectMapper.canDeserialize(javaType, causeRef)) {
@@ -321,6 +322,7 @@ public abstract class AbstractJackson2HttpMessageConverter extends AbstractGener
 	 * @return the Jackson JavaType
 	 */
 	protected JavaType getJavaType(Type type, @Nullable Class<?> contextClass) {
+		// 获取TypeFactory
 		TypeFactory typeFactory = this.objectMapper.getTypeFactory();
 		return typeFactory.constructType(GenericTypeResolver.resolveType(type, contextClass));
 	}
