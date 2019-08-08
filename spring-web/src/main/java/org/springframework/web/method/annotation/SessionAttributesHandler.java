@@ -46,6 +46,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 用于处理@SessionAttributes注解的，缓存其中的session attribute属性名称
 public class SessionAttributesHandler {
 
 	private final Set<String> attributeNames = new HashSet<>();

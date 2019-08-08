@@ -873,9 +873,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		try {
 			// 获取数据绑定工厂，作用是为了获取WebDataBinder,WebDataBinder给参数进行类型转换
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+
+			// 获取ModelAttribute Factory
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+			// 用handler method创建 ServletInvocableHandlerMethod 对象，用于调用HandleMethod
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+
 			// 设置参数解析器
 			if (this.argumentResolvers != null) {
 				invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
@@ -889,8 +893,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			// parameterNameDiscoverer : 参数名称发现者。通过反射可以很容易获取参数的类型，但是参数名称一般都和源码的不一样
 			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
+			// 创建ModelAndViewContainer 对象
 			ModelAndViewContainer mavContainer = new ModelAndViewContainer();
+
 			mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+
+			// 初始化model，调用@ModelAttribute注解修饰的方法，并将返回值放入到ModelAndViewContainer容器中。
+			// 每一个请求都会调用
 			modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 			mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
@@ -936,20 +945,24 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		return new ServletInvocableHandlerMethod(handlerMethod);
 	}
 
+	// 获取@ModelAttribute修饰的方法
 	private ModelFactory getModelFactory(HandlerMethod handlerMethod, WebDataBinderFactory binderFactory) {
 		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod);
 		Class<?> handlerType = handlerMethod.getBeanType();
 		Set<Method> methods = this.modelAttributeCache.get(handlerType);
 		if (methods == null) {
+			// 在handlerType类中查找没有被@RequestMapping注解修饰并且被@ModelAttribute注解修饰的所有方法
 			methods = MethodIntrospector.selectMethods(handlerType, MODEL_ATTRIBUTE_METHODS);
+			// 放入到RequetMappingHandlerAdapter
 			this.modelAttributeCache.put(handlerType, methods);
 		}
 		List<InvocableHandlerMethod> attrMethods = new ArrayList<>();
-		// Global methods first
+		// 全局的优先，也就是在@ControllerAdvice类中的@ModelAttribute注解修饰的方法
 		this.modelAttributeAdviceCache.forEach((clazz, methodSet) -> {
 			if (clazz.isApplicableToBeanType(handlerType)) {
 				Object bean = clazz.resolveBean();
 				for (Method method : methodSet) {
+					// 为每个ModelAttribute方法创建InvocableHandlerMethod对象
 					attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 				}
 			}
@@ -961,12 +974,15 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
+	// 封装@ModelAttribute修饰的方法为InvocableHandlerMethod
 	private InvocableHandlerMethod createModelAttributeMethod(WebDataBinderFactory factory, Object bean, Method method) {
 		InvocableHandlerMethod attrMethod = new InvocableHandlerMethod(bean, method);
 		if (this.argumentResolvers != null) {
 			attrMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 		}
 		attrMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
+
+		// 设置了WebDataBinderFactory
 		attrMethod.setDataBinderFactory(factory);
 		return attrMethod;
 	}
