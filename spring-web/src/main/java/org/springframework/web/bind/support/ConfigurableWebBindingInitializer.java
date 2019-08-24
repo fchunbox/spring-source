@@ -203,11 +203,17 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer 
 		if (this.bindingErrorProcessor != null) {
 			binder.setBindingErrorProcessor(this.bindingErrorProcessor);
 		}
+
+		// 判断当前类中的validator是否支持HandlerMethod 参数类型
 		if (this.validator != null && binder.getTarget() != null &&
 				this.validator.supports(binder.getTarget().getClass())) {
+
+			// 设置validator
 			binder.setValidator(this.validator);
 		}
 		if (this.conversionService != null) {
+
+			// 设置类型转换器。
 			binder.setConversionService(this.conversionService);
 		}
 		if (this.propertyEditorRegistrars != null) {

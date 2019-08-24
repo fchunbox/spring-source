@@ -116,9 +116,9 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		parserContext.pushContainingComponent(compositeDef);
 
 		// 向IoC容器中注册 AspectJAwareAdvisorAutoProxyCreator 类的BeanDefinition：（用于创建AOP代理对象的）
-		// BeanPostProcessor可以对实例化之后的bean进行一些操作
-		// AspectJAwareAdvisorAutoProxyCreator 实现了BeanPostProcessor接口,可以对目标对象实例化之后，创建对应的代理对象
-		// 就是BeanPostProcessor
+		//		// BeanPostProcessor可以对实例化之后的bean进行一些操作
+		//		// AspectJAwareAdvisorAutoProxyCreator 实现了BeanPostProcessor接口,可以对目标对象实例化之后，创建对应的代理对象
+		//		// 就是BeanPostProcessor
 		configureAutoProxyCreator(parserContext, element);
 
 		// 获取<aop:config>标签的子标签<aop:aspect>、<aop:advisor> 、<aop:pointcut>
@@ -181,6 +181,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 						new AdvisorComponentDefinition(advisorBeanName, advisorDef, (BeanDefinition) pointcut));
 			}
 			else if (pointcut instanceof String) {
+				// 加入一个RuntimeBeanReference, 依赖注入
 				advisorDef.getPropertyValues().add(POINTCUT, new RuntimeBeanReference((String) pointcut));
 				parserContext.registerComponent(
 						new AdvisorComponentDefinition(advisorBeanName, advisorDef));

@@ -186,7 +186,7 @@ public class WebDataBinder extends DataBinder {
 
 	/**
 	 * This implementation performs a field default and marker check
-	 * before delegating to the superclass binding process.
+	 * before delegaModelFactoryting to the superclass binding process.
 	 * @see #checkFieldDefaults
 	 * @see #checkFieldMarkers
 	 */

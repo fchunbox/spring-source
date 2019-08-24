@@ -95,6 +95,7 @@ public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodPr
 	 */
 	@Nullable
 	protected String getRequestValueForAttribute(String attributeName, NativeWebRequest request) {
+		// 获取Uri Template Variables
 		Map<String, String> variables = getUriTemplateVariables(request);
 		String variableValue = variables.get(attributeName);
 		if (StringUtils.hasText(variableValue)) {
@@ -151,6 +152,7 @@ public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodPr
 	 */
 	@Override
 	protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request) {
+		// 获取ServletRequest对象
 		ServletRequest servletRequest = request.getNativeRequest(ServletRequest.class);
 		Assert.state(servletRequest != null, "No ServletRequest");
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;

@@ -107,11 +107,15 @@ public final class ModelFactory {
 			throws Exception {
 
 		// 从sessionAttributes中获取request所有属性值
+		// 从session域中获取所有的属性k-v。
 		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
+
+		// 将session域中的属性和 ModelAndViewContainer中的属性合并
 		container.mergeAttributes(sessionAttributes);
 
 		// 调用ModelAttributeMethod， 并将返回值放入到ModelAndViewContainer容器中
 		// 注意，该方法，每次请求都会调用
+		// 调用@ModelAttribute注解修饰的方法
 		invokeModelAttributeMethods(request, container);
 
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
@@ -146,14 +150,17 @@ public final class ModelFactory {
 			}
 
 			// 调用对应的@ModelAttribute方法
+			// 调用对应的@ModelAttribute method
 			Object returnValue = modelMethod.invokeForRequest(request, container);
 			if (!modelMethod.isVoid()){
+				// 获取返回值的名称
 				String returnValueName = getNameForReturnValue(returnValue, modelMethod.getReturnType());
 				if (!ann.binding()) {
 					container.setBindingDisabled(returnValueName);
 				}
 				if (!container.containsAttribute(returnValueName)) {
 					// 将返回值放入到container中
+					// 调用的@ModelAttribute方法的返回值最终放入到了ModelAndViewContainer中。
 					container.addAttribute(returnValueName, returnValue);
 				}
 			}

@@ -733,6 +733,8 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	protected void doBind(MutablePropertyValues mpvs) {
 		checkAllowedFields(mpvs);
 		checkRequiredFields(mpvs);
+
+		// 开始进行属性绑定
 		applyPropertyValues(mpvs);
 	}
 
@@ -837,6 +839,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	protected void applyPropertyValues(MutablePropertyValues mpvs) {
 		try {
 			// Bind request parameters onto target object.
+			// 实质上获取到了BeanWrapperImpl对象，里面的包装的对象为HandlerMethod 方法的参数对象
 			getPropertyAccessor().setPropertyValues(mpvs, isIgnoreUnknownFields(), isIgnoreInvalidFields());
 		}
 		catch (PropertyBatchUpdateException ex) {

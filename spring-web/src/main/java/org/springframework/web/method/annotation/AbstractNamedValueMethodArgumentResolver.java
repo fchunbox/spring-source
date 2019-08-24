@@ -100,7 +100,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 		
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
 
-		// 将方法参数名称再处理一下
+		// 将方法参数名称再处理， 如果参数名为SPEL表达式，将对其进行解析
 		Object resolvedName = resolveStringValue(namedValueInfo.name);
 		if (resolvedName == null) {
 			throw new IllegalArgumentException(
@@ -202,10 +202,14 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 			return value;
 		}
 		String placeholdersResolved = this.configurableBeanFactory.resolveEmbeddedValue(value);
+
+		// 获取IOC容器中的SPEL resolver
 		BeanExpressionResolver exprResolver = this.configurableBeanFactory.getBeanExpressionResolver();
 		if (exprResolver == null || this.expressionContext == null) {
 			return value;
 		}
+
+		// 解析placeholder 也就是解析SPEL表达式，也就是说在@RequestParam注解中，参数名可以为SPEL表达式
 		return exprResolver.evaluate(placeholdersResolved, this.expressionContext);
 	}
 

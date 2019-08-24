@@ -167,6 +167,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		MediaType contentType;
 		boolean noContentType = false;
 		try {
+			// 获取请求头中的ContextType
 			contentType = inputMessage.getHeaders().getContentType();
 		}
 		catch (InvalidMediaTypeException ex) {
@@ -174,6 +175,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		}
 		if (contentType == null) {
 			noContentType = true;
+			// 默认为application/octet-stream
 			contentType = MediaType.APPLICATION_OCTET_STREAM;
 		}
 
@@ -184,13 +186,16 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 			targetClass = (Class<T>) resolvableType.resolve();
 		}
 
+		// 获取到HttpMethod
 		HttpMethod httpMethod = (inputMessage instanceof HttpRequest ? ((HttpRequest) inputMessage).getMethod() : null);
 		Object body = NO_VALUE;
 
 		EmptyBodyCheckingHttpInputMessage message;
 		try {
+			// 创建一个input message 对象
 			message = new EmptyBodyCheckingHttpInputMessage(inputMessage);
 
+			// 遍历messageConverter，并转换HttpInputMessage
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				Class<HttpMessageConverter<?>> converterType = (Class<HttpMessageConverter<?>>) converter.getClass();
 				GenericHttpMessageConverter<?> genericConverter =
@@ -309,6 +314,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 
 		public EmptyBodyCheckingHttpInputMessage(HttpInputMessage inputMessage) throws IOException {
 			this.headers = inputMessage.getHeaders();
+			// 获取request的请求体
 			InputStream inputStream = inputMessage.getBody();
 			if (inputStream.markSupported()) {
 				inputStream.mark(1);
