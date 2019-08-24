@@ -149,6 +149,7 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 	}
 
 	/**
+	 * 设置自省类
 	 * Set the class to introspect.
 	 * Needs to be called when the target object changes.
 	 * @param clazz the class to introspect
@@ -261,6 +262,7 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 	}
 
 
+	// 内部类，PropertyHandle， 新增获取和设置BeanProperty
 	private class BeanPropertyHandler extends PropertyHandler {
 
 		private final PropertyDescriptor pd;
@@ -291,6 +293,8 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 		public Object getValue() throws Exception {
 			final Method readMethod = this.pd.getReadMethod();
 			if (System.getSecurityManager() != null) {
+
+				// 临时扩大访问权限
 				AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 					ReflectionUtils.makeAccessible(readMethod);
 					return null;

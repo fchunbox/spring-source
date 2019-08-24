@@ -41,6 +41,7 @@ import org.springframework.web.util.WebUtils;
  * @see javax.servlet.ServletRequest#getAttribute
  * @see javax.servlet.http.HttpSession#getAttribute
  */
+// 封装了request 和response， 可以获取到request域和session域中的属性
 public class ServletRequestAttributes extends AbstractRequestAttributes {
 
 	/**

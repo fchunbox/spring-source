@@ -54,6 +54,7 @@ public class SessionAttributesHandler {
 
 	private final Set<String> knownAttributeNames = Collections.newSetFromMap(new ConcurrentHashMap<>(4));
 
+	// 用于存储WebRequest的属性
 	private final SessionAttributeStore sessionAttributeStore;
 
 

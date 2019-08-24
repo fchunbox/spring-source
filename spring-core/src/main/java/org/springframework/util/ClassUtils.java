@@ -955,6 +955,7 @@ public abstract class ClassUtils {
 		String shortName = getShortName(clazz);
 		int dotIndex = shortName.lastIndexOf(PACKAGE_SEPARATOR);
 		shortName = (dotIndex != -1 ? shortName.substring(dotIndex + 1) : shortName);
+		// 采用内省技术，获取类名首字母小写的名称
 		return Introspector.decapitalize(shortName);
 	}
 

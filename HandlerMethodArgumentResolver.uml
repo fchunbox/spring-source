@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.springframework.web.method.support.HandlerMethodArgumentResolver</OriginalElement>
+  <nodes>
+    <node x="3337.0" y="109.0">org.springframework.web.method.annotation.RequestHeaderMethodArgumentResolver</node>
+    <node x="1159.9999999999998" y="109.0">org.springframework.web.servlet.mvc.method.annotation.PathVariableMapMethodArgumentResolver</node>
+    <node x="2974.0" y="109.0">org.springframework.web.method.annotation.AbstractWebArgumentResolverAdapter</node>
+    <node x="761.9999999999998" y="109.0">org.springframework.web.servlet.mvc.method.annotation.RequestAttributeMethodArgumentResolver</node>
+    <node x="1928.9999999999998" y="0.0">org.springframework.web.method.support.HandlerMethodArgumentResolver</node>
+    <node x="2611.0" y="109.0">org.springframework.web.method.annotation.RequestParamMethodArgumentResolver</node>
+    <node x="1928.9999999999998" y="109.0">org.springframework.web.method.annotation.ModelAttributeMethodProcessor</node>
+    <node x="3701.0" y="109.0">org.springframework.web.method.annotation.SessionStatusMethodArgumentResolver</node>
+    <node x="0.0" y="109.0">org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver</node>
+    <node x="379.9999999999998" y="109.0">org.springframework.web.servlet.mvc.method.annotation.SessionAttributeMethodArgumentResolver</node>
+    <node x="1548.9999999999998" y="109.0">org.springframework.web.servlet.mvc.method.annotation.MatrixVariableMethodArgumentResolver</node>
+    <node x="2248.0" y="109.0">org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.springframework.web.method.annotation.RequestHeaderMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="3509.0" y="59.0" />
+      <point x="2187.227272727272" y="59.0" />
+      <point x="108.72727272727252" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="180.0" y="49.0" />
+      <point x="1942.5909090909088" y="49.0" />
+      <point x="-135.909090909091" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.method.annotation.AbstractWebArgumentResolverAdapter" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="3145.5" y="69.0" />
+      <point x="2160.045454545454" y="69.0" />
+      <point x="81.5454545454545" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.method.annotation.RequestParamMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="2782.5" y="79.0" />
+      <point x="2132.863636363636" y="79.0" />
+      <point x="54.36363636363626" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.method.annotation.SessionStatusMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="3873.0" y="49.0" />
+      <point x="2214.409090909091" y="49.0" />
+      <point x="135.909090909091" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.method.annotation.ModelAttributeMethodProcessor" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.RequestAttributeMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="950.9999999999998" y="69.0" />
+      <point x="1996.9545454545453" y="69.0" />
+      <point x="-81.5454545454545" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.PathVariableMapMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="1344.4999999999998" y="79.0" />
+      <point x="2024.1363636363633" y="79.0" />
+      <point x="-54.36363636363649" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.MatrixVariableMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="1728.9999999999998" y="89.0" />
+      <point x="2051.3181818181815" y="89.0" />
+      <point x="-27.181818181818244" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.SessionAttributeMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="560.9999999999998" y="59.0" />
+      <point x="1969.772727272727" y="59.0" />
+      <point x="-108.72727272727275" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver" target="org.springframework.web.method.support.HandlerMethodArgumentResolver">
+      <point x="0.0" y="-14.5" />
+      <point x="2419.5" y="89.0" />
+      <point x="2105.681818181818" y="89.0" />
+      <point x="27.181818181818244" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="2285.5" y="23.977514276463125" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

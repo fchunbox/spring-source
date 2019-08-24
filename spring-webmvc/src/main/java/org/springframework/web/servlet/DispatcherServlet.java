@@ -322,11 +322,11 @@ public class DispatcherServlet extends FrameworkServlet {
 
 	/** List of HandlerMappings used by this servlet */
 	@Nullable
-	private List<HandlerMapping> handlerMappings;
+	private List<HandlerMapping> handlerMappings; // 用于存储HandlerMapping
 
 	/** List of HandlerAdapters used by this servlet */
 	@Nullable
-	private List<HandlerAdapter> handlerAdapters;
+	private List<HandlerAdapter> handlerAdapters; // 用于存储HandlerAdaptor
 
 	/** List of HandlerExceptionResolvers used by this servlet */
 	@Nullable
@@ -342,7 +342,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 	/** List of ViewResolvers used by this servlet */
 	@Nullable
-	private List<ViewResolver> viewResolvers;
+	private List<ViewResolver> viewResolvers; // 用于存储ViewResolver
 
 
 	/**
@@ -1230,6 +1230,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @return the HandlerExecutionChain, or {@code null} if no handler could be found
 	 */
 	@Nullable
+	// 获取HandlerExecutinChain, 包含了Handler和Interceptors
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		if (this.handlerMappings != null) {
 			// 遍历所有的处理器映射器

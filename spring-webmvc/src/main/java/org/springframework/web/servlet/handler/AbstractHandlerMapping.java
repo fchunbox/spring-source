@@ -362,7 +362,11 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		}
 		// 创建处理器执行链
 		HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request);
+
+		// 判断是否cors请求
 		if (CorsUtils.isCorsRequest(request)) {
+
+			// 添加向拦截器链中添加CorsInterceptor
 			CorsConfiguration globalConfig = this.globalCorsConfigSource.getCorsConfiguration(request);
 			CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
 			CorsConfiguration config = (globalConfig != null ? globalConfig.combine(handlerConfig) : handlerConfig);

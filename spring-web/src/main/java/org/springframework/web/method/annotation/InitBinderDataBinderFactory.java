@@ -61,6 +61,7 @@ public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 	 * @throws Exception if one of the invoked @{@link InitBinder} methods fail.
 	 */
 	@Override
+	// 调用Handler类的中的@InitBinder注解的方法
 	public void initBinder(WebDataBinder binder, NativeWebRequest request) throws Exception {
 		for (InvocableHandlerMethod binderMethod : this.binderMethods) {
 			if (isBinderMethodApplicable(binderMethod, binder)) {
@@ -81,6 +82,7 @@ public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 	 * names of the annotation, if present.
 	 */
 	protected boolean isBinderMethodApplicable(HandlerMethod binderMethod, WebDataBinder binder) {
+		// 判断方法是否被@InitBinder注解修饰
 		InitBinder ann = binderMethod.getMethodAnnotation(InitBinder.class);
 		Assert.state(ann != null, "No InitBinder annotation");
 		Collection<String> names = Arrays.asList(ann.value());

@@ -46,6 +46,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @since 3.1
  * @see RequestParamMethodArgumentResolver
  */
+// @RequestParam注解的参数解析器
 public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
@@ -61,6 +62,7 @@ public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgum
 
 		Class<?> paramType = parameter.getParameterType();
 
+		// 从请求中获取所有的参数
 		Map<String, String[]> parameterMap = webRequest.getParameterMap();
 		if (MultiValueMap.class.isAssignableFrom(paramType)) {
 			MultiValueMap<String, String> result = new LinkedMultiValueMap<>(parameterMap.size());

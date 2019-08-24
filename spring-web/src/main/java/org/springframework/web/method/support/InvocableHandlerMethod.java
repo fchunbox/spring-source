@@ -51,6 +51,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	@Nullable
 	private WebDataBinderFactory dataBinderFactory;
 
+	// 封装了HandlerMethodArgumentResolver的集合
 	private HandlerMethodArgumentResolverComposite argumentResolvers = new HandlerMethodArgumentResolverComposite();
 
 	// 参数名称发现者
@@ -126,6 +127,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * or if the method raised an exception
 	 */
 	@Nullable
+	// 调用handler method
 	public Object invokeForRequest(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
@@ -147,11 +149,13 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	/**
 	 * Get the method argument values for the current request.
 	 */
+	// 解析handler method 方法参数
 	private Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
 		// 得到HandlerMethod中的参数集合
 		MethodParameter[] parameters = getMethodParameters();
+
 		// 该数组存放的数据，已经是经过类型转换之后的参数了
 		Object[] args = new Object[parameters.length];
 		// 遍历处理每一个参数
@@ -159,6 +163,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 			MethodParameter parameter = parameters[i];
 			// 初始化参数名称发现发现者（通过反射获取参数类型很容易，获取参数名称需要特殊处理）
 			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
+
 			// 解决默认支持的参数
 			args[i] = resolveProvidedArgument(parameter, providedArgs);
 			if (args[i] != null) {

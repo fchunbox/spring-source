@@ -797,6 +797,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// Execute invokeHandlerMethod in synchronized block if required.
 		if (this.synchronizeOnSession) {
+			// 获取HttpSession
 			HttpSession session = request.getSession(false);
 			if (session != null) {
 				Object mutex = WebUtils.getSessionMutex(session);
@@ -843,6 +844,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 * Return the {@link SessionAttributesHandler} instance for the given handler type
 	 * (never {@code null}).
 	 */
+	// 创建或获取SessionAttributeHandler， 并放入到sessionAttributeHandlerCache中
 	private SessionAttributesHandler getSessionAttributesHandler(HandlerMethod handlerMethod) {
 		Class<?> handlerType = handlerMethod.getBeanType();
 		SessionAttributesHandler sessionAttrHandler = this.sessionAttributesHandlerCache.get(handlerType);
@@ -869,13 +871,18 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
+		// 将request和response封装到ServletWebRequest对象中。实质还是RequestAttribute
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		try {
 			// 获取数据绑定工厂，作用是为了获取WebDataBinder,WebDataBinder给参数进行类型转换
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+
+			// 获取ModelFactory， 处理@ModelAttribute注解的方法，并放入到ModelFactory中，和WebDataBinderFactory逻辑类似。
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+			// 创建可调用的HandlerMethod 方法，
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+
 			// 设置参数解析器
 			if (this.argumentResolvers != null) {
 				invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
@@ -884,13 +891,17 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			if (this.returnValueHandlers != null) {
 				invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 			}
-			
+
+			// 设置DataBinderFactory
 			invocableMethod.setDataBinderFactory(binderFactory);
 			// parameterNameDiscoverer : 参数名称发现者。通过反射可以很容易获取参数的类型，但是参数名称一般都和源码的不一样
 			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
+			// 创建ModelAdnView Container
 			ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 			mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+
+			// 调用@ModelAttribute注解的方法
 			modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 			mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
@@ -913,7 +924,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
 
-			// 调用HandlerMethod
+			// 调用InvocableHandlerMethod 对象
 			invocableMethod.invokeAndHandle(webRequest, mavContainer);
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
@@ -937,27 +948,43 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	}
 
 	private ModelFactory getModelFactory(HandlerMethod handlerMethod, WebDataBinderFactory binderFactory) {
+		// 创建或获取SessionAttributesHandler
 		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod);
 		Class<?> handlerType = handlerMethod.getBeanType();
 		Set<Method> methods = this.modelAttributeCache.get(handlerType);
 		if (methods == null) {
+
+			// 从handlerType中获取没有被RequestMapping注解并且有ModelAttribute注解的方法
 			methods = MethodIntrospector.selectMethods(handlerType, MODEL_ATTRIBUTE_METHODS);
+
+			// 将其添加缓存中
 			this.modelAttributeCache.put(handlerType, methods);
 		}
 		List<InvocableHandlerMethod> attrMethods = new ArrayList<>();
 		// Global methods first
+		// 从@ControllerAdvice注解的类中获取@ModelAttribute注解的方法
 		this.modelAttributeAdviceCache.forEach((clazz, methodSet) -> {
+
+			// 判断handlerType是否是ControllerAdviceBean
 			if (clazz.isApplicableToBeanType(handlerType)) {
 				Object bean = clazz.resolveBean();
 				for (Method method : methodSet) {
+
+					// 创建ModelAttributesMethod
 					attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 				}
 			}
 		});
+
+		// 将handler类中被@ModelAttribute注解修饰的方法创建InvocableHandlerMethod
 		for (Method method : methods) {
 			Object bean = handlerMethod.getBean();
+
+			// 创建ModelAttributeMethod，并放入到集合中
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
+
+		// 最后创建一个ModelFactory
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
@@ -988,6 +1015,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			if (clazz.isApplicableToBeanType(handlerType)) {
 				Object bean = clazz.resolveBean();
 				for (Method method : methodSet) {
+
+					// 添加到initBinderMethods
 					initBinderMethods.add(createInitBinderMethod(bean, method));
 				}
 			}
@@ -997,15 +1026,24 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Object bean = handlerMethod.getBean();
 			initBinderMethods.add(createInitBinderMethod(bean, method));
 		}
-		// 创建DataBinderFactory
+
+		// 创建DataBinderFactory， 里面包含了
 		return createDataBinderFactory(initBinderMethods);
 	}
 
+	// 创建InitBinderMethod
 	private InvocableHandlerMethod createInitBinderMethod(Object bean, Method method) {
+
+		// 创建可调用的HandlerMethod
 		InvocableHandlerMethod binderMethod = new InvocableHandlerMethod(bean, method);
 		if (this.initBinderArgumentResolvers != null) {
+
+			// 设置MethodArgumentResolvers
 			binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers);
 		}
+
+
+		// 设置默认的DataBinderFactory, 并设置WebBindingInitializer, 在此对象中
 		binderMethod.setDataBinderFactory(new DefaultDataBinderFactory(this.webBindingInitializer));
 		binderMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 		return binderMethod;
@@ -1022,6 +1060,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	protected InitBinderDataBinderFactory createDataBinderFactory(List<InvocableHandlerMethod> binderMethods)
 			throws Exception {
 
+		// 创建ServletRequestDataBinderFactory
 		return new ServletRequestDataBinderFactory(binderMethods, getWebBindingInitializer());
 	}
 

@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  * @see ServletRequestAttributes
  */
+// 可以方法session和request域中的属性，对其属性进行增删改查
 public interface RequestAttributes {
 
 	/**

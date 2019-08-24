@@ -597,8 +597,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 					addMappingName(name, handlerMethod);
 				}
 
+				// 初始化CorsConfiguration，跨域问题的配置
 				CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping);
 				if (corsConfig != null) {
+					// 将corsConfig放入到corsLookup集合中
 					this.corsLookup.put(handlerMethod, corsConfig);
 				}
 

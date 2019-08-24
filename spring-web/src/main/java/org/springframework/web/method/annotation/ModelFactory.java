@@ -106,8 +106,12 @@ public final class ModelFactory {
 	public void initModel(NativeWebRequest request, ModelAndViewContainer container, HandlerMethod handlerMethod)
 			throws Exception {
 
+		// 从sessionAttributes中获取request所有属性值
 		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
 		container.mergeAttributes(sessionAttributes);
+
+		// 调用ModelAttributeMethod， 并将返回值放入到ModelAndViewContainer容器中
+		// 注意，该方法，每次请求都会调用
 		invokeModelAttributeMethods(request, container);
 
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
@@ -133,6 +137,7 @@ public final class ModelFactory {
 			InvocableHandlerMethod modelMethod = getNextModelMethod(container).getHandlerMethod();
 			ModelAttribute ann = modelMethod.getMethodAnnotation(ModelAttribute.class);
 			Assert.state(ann != null, "No ModelAttribute annotation");
+			// 判断container中，是否包含指定名称的属性
 			if (container.containsAttribute(ann.name())) {
 				if (!ann.binding()) {
 					container.setBindingDisabled(ann.name());
@@ -140,7 +145,7 @@ public final class ModelFactory {
 				continue;
 			}
 
-			// 调用对应的
+			// 调用对应的@ModelAttribute方法
 			Object returnValue = modelMethod.invokeForRequest(request, container);
 			if (!modelMethod.isVoid()){
 				String returnValueName = getNameForReturnValue(returnValue, modelMethod.getReturnType());
@@ -148,12 +153,14 @@ public final class ModelFactory {
 					container.setBindingDisabled(returnValueName);
 				}
 				if (!container.containsAttribute(returnValueName)) {
+					// 将返回值放入到container中
 					container.addAttribute(returnValueName, returnValue);
 				}
 			}
 		}
 	}
 
+	// 获取ModelMethod
 	private ModelMethod getNextModelMethod(ModelAndViewContainer container) {
 		for (ModelMethod modelMethod : this.modelMethods) {
 			if (modelMethod.checkDependencies(container)) {
@@ -269,6 +276,8 @@ public final class ModelFactory {
 	 * @param returnType a descriptor for the return type of the method
 	 * @return the derived name (never {@code null} or empty String)
 	 */
+	// 获取@ModelAttribute的value属性作为返回值的名称，如果value为空
+	// 那么获取返回值类型的类名首字母小写 作为返回值的名称
 	public static String getNameForReturnValue(@Nullable Object returnValue, MethodParameter returnType) {
 		ModelAttribute ann = returnType.getMethodAnnotation(ModelAttribute.class);
 		if (ann != null && StringUtils.hasText(ann.value())) {
@@ -284,7 +293,7 @@ public final class ModelFactory {
 	}
 
 
-	private static class ModelMethod {
+	private static class ModelMethod { // 将InvocableHandlerMethod 适配为ModelMethod
 
 		private final InvocableHandlerMethod handlerMethod;
 

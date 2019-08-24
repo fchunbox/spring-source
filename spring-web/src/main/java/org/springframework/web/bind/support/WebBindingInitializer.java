@@ -27,6 +27,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author Rossen Stoyanchev
  * @since 2.5
  */
+// 初始化DataBinder， 所有的handler的@InitBinder的方法，在其子类中调用
 public interface WebBindingInitializer {
 
 	/**
@@ -34,6 +35,7 @@ public interface WebBindingInitializer {
 	 * @param binder the DataBinder to initialize
 	 * @since 5.0
 	 */
+	// 初始化DataBinder，调用handler 中@InitBinder注解的方法
 	void initBinder(WebDataBinder binder);
 
 	/**

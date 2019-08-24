@@ -130,6 +130,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 		// 而大多数PropertyEditor都已经内置了，那么如果需要自定义添加PropertyEditor的话，需要使用@InitBinder注解的方法进行处理
 		if (binderFactory != null) {
 			// 获取web数据绑定器，主要作用是将request请求参数中的值，转换成指定类型的Controller方法参数
+			// 同时初始化DataBinder，调用Handler类中的@InitBinder修饰的方法。
 			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name);
 			try {
 				// 使用web数据绑定器，将String类型的请求数据，转换成指定数据类型，并绑定到指定方法参数中

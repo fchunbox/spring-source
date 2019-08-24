@@ -166,6 +166,7 @@ public class HandlerMethod {
 	}
 
 
+	// 封装为HandlerMethod对象时，就初始化MethodPatameters
 	private MethodParameter[] initMethodParameters() {
 		int count = this.bridgedMethod.getParameterCount();
 		MethodParameter[] result = new MethodParameter[count];

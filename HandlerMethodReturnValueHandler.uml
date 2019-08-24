@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.springframework.web.method.support.HandlerMethodReturnValueHandler</OriginalElement>
+  <nodes>
+    <node x="1840.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.ViewNameMethodReturnValueHandler</node>
+    <node x="1167.0" y="89.0">org.springframework.web.method.annotation.MapMethodProcessor</node>
+    <node x="2185.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.ViewMethodReturnValueHandler</node>
+    <node x="407.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler</node>
+    <node x="1389.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.ModelAndViewResolverMethodReturnValueHandler</node>
+    <node x="22.0" y="168.0">org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor</node>
+    <node x="0.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor</node>
+    <node x="787.0" y="89.0">org.springframework.web.servlet.mvc.method.annotation.ServletModelAttributeMethodProcessor</node>
+    <node x="1110.0" y="0.0">org.springframework.web.method.support.HandlerMethodReturnValueHandler</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="193.5" y="49.0" />
+      <point x="1132.5714285714284" y="49.0" />
+      <point x="-135.42857142857156" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.method.annotation.MapMethodProcessor" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ModelAndViewResolverMethodReturnValueHandler" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="1604.5" y="69.0" />
+      <point x="1313.142857142857" y="69.0" />
+      <point x="45.14285714285711" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ViewNameMethodReturnValueHandler" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="2002.5" y="59.0" />
+      <point x="1358.2857142857142" y="59.0" />
+      <point x="90.28571428571422" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ViewMethodReturnValueHandler" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="2330.0" y="49.0" />
+      <point x="1403.4285714285713" y="49.0" />
+      <point x="135.42857142857133" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="587.0" y="59.0" />
+      <point x="1177.7142857142858" y="59.0" />
+      <point x="-90.28571428571422" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor" target="org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="org.springframework.web.servlet.mvc.method.annotation.ServletModelAttributeMethodProcessor" target="org.springframework.web.method.support.HandlerMethodReturnValueHandler">
+      <point x="0.0" y="-14.5" />
+      <point x="967.0" y="69.0" />
+      <point x="1222.857142857143" y="69.0" />
+      <point x="-45.14285714285711" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="499.0" y="14.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -73,5 +73,61 @@
 
 
 4. DispatcherServlet请求处理流程
+    FrameworkServlet#service(): 处理请求
+        #processRequest(): 所有请求method，都调用该方法处理请求
+            LocaleContextHolder#getLocaleContext(): 从当前线程的ThreadLocal中获取LocaleContextHolder
+            #buildLocaleContext(request): 从当前request中，构建当前的LocaleContext
+            RequestContextHolder#getRequestAttributes(): 从当前的ThreadLocal中获取RequestAttributes，实质是ServletRequestAttributes对象，里面封装了request和response对象
+            #buildRequestAttributes(request,responce,previousAttributes): 构建ServletRequestAttributes对象。
+            #initContextHolders(): 将localeContext和requestAttributes放入到ThreadLocale中。
+            DispatcherServlet#doService: 请求实际的处理逻辑
+                # 将WebApplicationContext放入到请求域中
+                #doDispatch(request, response): 处理请求分发
+                    #getHandler(request): 获取HandlerExecutionChain对象
+                        AbstractHandlerMapping#getHandler(request): 获取HandlerExecutionChain
+                            AbstractHandlerMethodMapping#getHandlerInternal(): 获取HandlerMethod对象，也就是handler
+                                #lookupHandlerMethod(): 找到合适的HandlerMethod对象。
+                                    AbstractHandlerMethodMappping$MappingRegistry#getMappingsByUrl(): 从urlLookup集合，找到RequestMappingInfo对象
+                                    #addMatchingMappings： 将RequestMappingInfo对象和HandlerMethod对象进行匹配，将匹配到的信息封装到Match对象，再将Match对象放入到matches集合中
+                            # getHandlerExecutionChain: 根据handler，创建处理器执行器链， 并将Interceptors加入到执行器链中
 
-						
+                    #getHandlerAdaptor(handler): 根据Handler获取对应的HandlerAdaptor， 返回RequestMappingHandlerAdaptor
+                    HandlerExecutionChain#applyPreHandle(): 调用所有的Interceptor 拦截器的preHandle方法
+                    AbstractHandlerMethodAdaptor#handle(): 处理请求，调用handler method.
+                        RequestMappingHandlerAdaptor#handleInternal(request, response): 处理请求，调用handler method
+                            #invokeHandlerMethod(): 调用HandlerMethod，也就是执行Handler
+                                # 将request和response封装为ServletWebRequest对象，也就是ServletRequestAttributes
+                                # getDataBinderFactory(handlerMethod): 创建DataBinderFactory
+                                    # 从initBinderCache中获取Handler类中@InitBinder注解的方法
+                                    # 创建InitBinderMethod方法，并加入到initBinderMethods集合中，创建DataBinderFactory返回
+                                # getModelFactory(): 处理@ModelAttribute注解的方法，并返回ModelFactory
+                                # createInvocableHandlerMethod(): 将HandlerMethod封装为ServletInvocableHandlerMethod
+                                # 设置参数解析器
+                                # 设置返回值解析器
+                                # 设置binderFactory
+                                # 创建ModelAndViewContainer对象
+                                ModelFactory#initModel(): 调用Handler类的@ModelAttribute注解的方法
+                                ServletInvocableHandlerMethod#invokeAndHandle(): 参数绑定，验证调用HandlerMethod
+
+
+
+
+
+                    # applyDefaultViewName(): 设置默认视图名称
+                    HandlerExecutionChain#applyPostHandle(): 调用所有interceptor 拦截器的postHandle方法
+                    #processDispatchResult(): 处理handler调用返回的ModelAndView对象和结果。
+
+
+            #resetContextHolders： 请求处理完成后，重置localeContextHolder和requestAttributesHolder
+            #publishRequestHandledEvent: 不管请求是否处理成功，发送ServletREquestHandledEvent事件
+
+
+
+
+5. 参数绑定流程
+
+6. @initBinder处理流程
+
+7. @ModelAttributes处理流程
+
+8. @ControllerAdvice处理流程，AOP技术实现全局的异常处理。
