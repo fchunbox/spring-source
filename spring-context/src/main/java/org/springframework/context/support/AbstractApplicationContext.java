@@ -143,7 +143,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	/** Environment used by this context */
 	@Nullable
-	private ConfigurableEnvironment environment;
+	private ConfigurableEnvironment environment; // 可配置的环境
 
 	/** BeanFactoryPostProcessors to apply on refresh */
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
@@ -511,6 +511,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				// STEP 5： 调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理
+				// @Configuration注解就在此步骤中，解析的
                 invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -686,6 +687,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+
+		//
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
